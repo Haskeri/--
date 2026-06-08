@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}Модерация рецензий — Электронная библиотека{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-0">
+        <i class="bi bi-shield-check me-2 text-warning"></i>Модерация рецензий
+    </h2>
+    <span class="badge bg-warning text-dark fs-6 px-3 py-2">
+        На рассмотрении: {{ pagination.total }}
+    </span>
+</div>
+
+{% if reviews %}
+<div class="card shadow-sm border-0 rounded-4 overflow-hidden mb-4">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Книга</th>
+                    <th>Пользователь</th>
+                    <th>Оценка</th>
+                    <th>Дата добавления</th>
+                    <th class="text-center">Действие</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for review in reviews %}
+                <tr>
+                    <td class="text-muted">{{ (pagination.page - 1) * 10 + loop.index }}</td>
+                    <td>
+                        <a href="{{ url_for('books.detail', book_id=review.book_id) }}"
+                           class="text-decoration-none fw-semibold">
+                            {{ review.book.title }}
+                        </a>
+                    </td>
+                    <td>{{ review.user.full_name }}</td>
+                    <td>
+                        <span class="star-rating small">
+                            {% for i in range(review.rating) %}
+                                <i class="bi bi-star-fill"></i>
+                            {% endfor %}
+                            {% for i in range(5 - review.rating) %}
+                                <i class="bi bi-star"></i>
+                            {% endfor %}
+                        </span>
+                        <small class="text-muted ms-1">{{ review.rating }}</small>
+                    </td>
+                    <td class="text-muted small">
+                        {{ review.created_at.strftime('%d.%m.%Y %H:%M') }}
+                    </td>
+                    <td class="text-center">
+                        <a href="{{ url_for('moderation.review_detail', review_id=review.id) }}"
+                           class="btn btn-sm btn-primary">
+                            <i class="bi bi-eye me-1"></i>Рассмотреть
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Пагинация -->
+{% if pagination.pages > 1 %}
+<nav>
+    <ul class="pagination justify-content-center">
+        <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+            <a class="page-link" href="{{ url_for('moderation.index', page=pagination.prev_num) }}">
+                <i class="bi bi-chevron-left"></i>
+            </a>
+        </li>
+        {% for p in pagination.iter_pages(left_edge=2, right_edge=2, left_current=2, right_current=2) %}
+            {% if p %}
+                <li class="page-item {% if p == pagination.page %}active{% endif %}">
+                    <a class="page-link" href="{{ url_for('moderation.index', page=p) }}">{{ p }}</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">…</span></li>
+            {% endif %}
+        {% endfor %}
+        <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+            <a class="page-link" href="{{ url_for('moderation.index', page=pagination.next_num) }}">
+                <i class="bi bi-chevron-right"></i>
+            </a>
+        </li>
+    </ul>
+</nav>
+{% endif %}
+
+{% else %}
+<div class="text-center py-5">
+    <i class="bi bi-check2-all text-success" style="font-size: 4rem;"></i>
+    <h5 class="text-muted mt-3">Нет рецензий, ожидающих рассмотрения</h5>
+    <p class="text-muted">Все рецензии проверены!</p>
+</div>
+{% endif %}
+{% endblock %}

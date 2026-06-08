@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}Рассмотрение рецензии — Электронная библиотека{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('books.index') }}">Главная</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('moderation.index') }}">Модерация рецензий</a></li>
+        <li class="breadcrumb-item active">Рассмотрение</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0 rounded-4 mb-4">
+            <div class="card-header bg-transparent border-0 pt-4 px-4">
+                <h3 class="fw-bold mb-0">
+                    <i class="bi bi-eye me-2 text-primary"></i>Рассмотрение рецензии
+                </h3>
+            </div>
+            <div class="card-body px-4">
+                <dl class="row mb-4">
+                    <dt class="col-sm-3 text-muted">Книга</dt>
+                    <dd class="col-sm-9">
+                        <a href="{{ url_for('books.detail', book_id=review.book_id) }}"
+                           class="text-decoration-none fw-semibold">
+                            {{ review.book.title }}
+                        </a>
+                    </dd>
+
+                    <dt class="col-sm-3 text-muted">Пользователь</dt>
+                    <dd class="col-sm-9">{{ review.user.full_name }}</dd>
+
+                    <dt class="col-sm-3 text-muted">Оценка</dt>
+                    <dd class="col-sm-9">
+                        <span class="star-rating">
+                            {% for i in range(review.rating) %}
+                                <i class="bi bi-star-fill"></i>
+                            {% endfor %}
+                            {% for i in range(5 - review.rating) %}
+                                <i class="bi bi-star"></i>
+                            {% endfor %}
+                        </span>
+                        <strong class="ms-1">{{ review.rating }} — {{ review.rating_label }}</strong>
+                    </dd>
+
+                    <dt class="col-sm-3 text-muted">Дата</dt>
+                    <dd class="col-sm-9 text-muted">
+                        {{ review.created_at.strftime('%d.%m.%Y в %H:%M') }}
+                    </dd>
+                </dl>
+
+                <h6 class="fw-bold text-muted text-uppercase small mb-2">Текст рецензии</h6>
+                <div class="p-3 bg-light rounded-3 review-text-content">
+                    {{ review.text | safe }}
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-0 px-4 pb-4">
+                <div class="d-flex gap-3">
+                    <form method="POST" action="{{ url_for('moderation.approve', review_id=review.id) }}">
+                        <button type="submit" class="btn btn-success px-4">
+                            <i class="bi bi-check-circle me-1"></i>Одобрить
+                        </button>
+                    </form>
+                    <form method="POST" action="{{ url_for('moderation.reject', review_id=review.id) }}">
+                        <button type="submit" class="btn btn-danger px-4">
+                            <i class="bi bi-x-circle me-1"></i>Отклонить
+                        </button>
+                    </form>
+                    <a href="{{ url_for('moderation.index') }}" class="btn btn-outline-secondary ms-auto">
+                        <i class="bi bi-arrow-left me-1"></i>Назад к списку
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Рендер Markdown для текста рецензии
+const el = document.querySelector('.review-text-content');
+if (el) {
+    const md = markdownit();
+    el.innerHTML = md.render(el.textContent);
+}
+</script>
+{% endblock %}
