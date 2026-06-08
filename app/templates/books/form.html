@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% import 'macros.html' as macros %}
+
+{% block title %}{% if editing %}Редактирование{% else %}Добавление{% endif %} книги — Электронная библиотека{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('books.index') }}">Главная</a></li>
+        {% if editing %}
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('books.detail', book_id=book.id) }}">{{ book.title }}</a>
+            </li>
+            <li class="breadcrumb-item active">Редактирование</li>
+        {% else %}
+            <li class="breadcrumb-item active">Добавление книги</li>
+        {% endif %}
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-header bg-transparent border-0 pt-4 px-4">
+                <h3 class="fw-bold mb-0">
+                    <i class="bi bi-{% if editing %}pencil{% else %}plus-circle{% endif %} me-2 text-primary"></i>
+                    {% if editing %}Редактирование книги{% else %}Добавление новой книги{% endif %}
+                </h3>
+            </div>
+            <div class="card-body px-4 pb-4">
+                <form method="POST" {% if not editing %}enctype="multipart/form-data"{% endif %} novalidate>
+
+                    {{ macros.book_form_fields(form_data, book, editing) }}
+
+                    {% if not editing %}
+                    <div class="mb-4">
+                        <label for="cover" class="form-label fw-semibold">
+                            Обложка <span class="text-danger">*</span>
+                        </label>
+                        <input type="file" class="form-control" id="cover" name="cover"
+                               accept="image/*" required>
+                        <div class="form-text">Форматы: JPEG, PNG, WebP. Максимум 16 МБ.</div>
+                        <div id="coverPreview" class="mt-2 d-none">
+                            <img id="previewImg" src="#" alt="Предпросмотр"
+                                 style="max-height: 200px; border-radius: 8px;">
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="mb-4 alert alert-info">
+                        <i class="bi bi-image me-2"></i>
+                        Обложка книги не подлежит изменению после загрузки.
+                    </div>
+                    {% endif %}
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="bi bi-floppy me-1"></i>Сохранить
+                        </button>
+                        <a href="{{ url_for('books.detail', book_id=book.id) if editing else url_for('books.index') }}"
+                           class="btn btn-outline-secondary px-4">
+                            <i class="bi bi-x-lg me-1"></i>Отмена
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// EasyMDE для описания
+const easyMDE = new EasyMDE({
+    element: document.getElementById('description'),
+    spellChecker: false,
+    autofocus: false,
+    placeholder: 'Краткое описание книги (поддерживается Markdown)',
+    toolbar: ['bold', 'italic', 'heading', '|', 'quote', 'unordered-list', 'ordered-list',
+              '|', 'link', '|', 'preview', 'side-by-side', 'fullscreen', '|', 'guide'],
+    status: false,
+});
+
+// Предпросмотр обложки
+const coverInput = document.getElementById('cover');
+if (coverInput) {
+    coverInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                document.getElementById('previewImg').src = e.target.result;
+                document.getElementById('coverPreview').classList.remove('d-none');
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
+</script>
+{% endblock %}

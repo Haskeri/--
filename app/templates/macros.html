@@ -1,0 +1,59 @@
+{% macro book_form_fields(form_data, book=None, editing=False) %}
+<div class="mb-3">
+    <label for="title" class="form-label fw-semibold">Название <span class="text-danger">*</span></label>
+    <input type="text" class="form-control" id="title" name="title" required
+           value="{{ form_data.get('title', book.title if book else '') }}"
+           placeholder="Введите название книги">
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label for="author" class="form-label fw-semibold">Автор <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" id="author" name="author" required
+               value="{{ form_data.get('author', book.author if book else '') }}"
+               placeholder="Фамилия Имя Отчество">
+    </div>
+    <div class="col-md-3 mb-3">
+        <label for="year" class="form-label fw-semibold">Год <span class="text-danger">*</span></label>
+        <input type="number" class="form-control" id="year" name="year" required
+               min="1000" max="2100"
+               value="{{ form_data.get('year', book.year if book else '') }}"
+               placeholder="2024">
+    </div>
+    <div class="col-md-3 mb-3">
+        <label for="pages" class="form-label fw-semibold">Страниц <span class="text-danger">*</span></label>
+        <input type="number" class="form-control" id="pages" name="pages" required
+               min="1"
+               value="{{ form_data.get('pages', book.pages if book else '') }}"
+               placeholder="350">
+    </div>
+</div>
+
+<div class="mb-3">
+    <label for="publisher" class="form-label fw-semibold">Издательство <span class="text-danger">*</span></label>
+    <input type="text" class="form-control" id="publisher" name="publisher" required
+           value="{{ form_data.get('publisher', book.publisher if book else '') }}"
+           placeholder="Название издательства">
+</div>
+
+<div class="mb-3">
+    <label for="genres" class="form-label fw-semibold">Жанры <span class="text-danger">*</span></label>
+    <select class="form-select" id="genres" name="genres" multiple required style="min-height: 120px;">
+        {% for genre in genres %}
+            {% set selected_ids = form_data.getlist('genres', type=int) if form_data else [] %}
+            {% set book_genre_ids = book.genres | map(attribute='id') | list if book else [] %}
+            <option value="{{ genre.id }}"
+                {% if genre.id in selected_ids or genre.id in book_genre_ids %}selected{% endif %}>
+                {{ genre.name }}
+            </option>
+        {% endfor %}
+    </select>
+    <div class="form-text">Удерживайте Ctrl (Cmd на Mac) для выбора нескольких жанров</div>
+</div>
+
+<div class="mb-3">
+    <label for="description" class="form-label fw-semibold">Описание <span class="text-danger">*</span></label>
+    <textarea class="form-control" id="description" name="description" rows="6"
+              placeholder="Краткое описание книги (поддерживается Markdown)">{{ form_data.get('description', book.description if book else '') }}</textarea>
+</div>
+{% endmacro %}
