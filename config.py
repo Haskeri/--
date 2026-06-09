@@ -8,7 +8,7 @@ if _env_path.exists():
         line = line.strip()
         if line and '=' in line and not line.startswith('#'):
             key, _, value = line.partition('=')
-            os.environ.setdefault(key.strip(), value.strip())
+            os.environ[key.strip()] = value.strip()
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
