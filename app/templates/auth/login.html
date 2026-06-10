@@ -5,43 +5,49 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-5 col-lg-4">
-        <div class="card shadow-sm border-0 rounded-4">
-            <div class="card-body p-4">
-                <div class="text-center mb-4">
-                    <i class="bi bi-book-half text-primary" style="font-size: 2.5rem;"></i>
-                    <h4 class="mt-2 fw-bold">Вход в систему</h4>
-                    <p class="text-muted small">Электронная библиотека</p>
-                </div>
-
-                <form method="POST" novalidate>
-                    <div class="mb-3">
-                        <label for="login" class="form-label fw-semibold">Логин</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-person"></i></span>
-                            <input type="text" class="form-control" id="login" name="login"
-                                   placeholder="Введите логин" required autofocus
-                                   value="{{ request.form.get('login', '') }}">
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label fw-semibold">Пароль</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                            <input type="password" class="form-control" id="password" name="password"
-                                   placeholder="Введите пароль" required>
-                        </div>
-                    </div>
-                    <div class="mb-4 form-check">
-                        <input type="checkbox" class="form-check-input" id="remember" name="remember">
-                        <label class="form-check-label" for="remember">Запомнить меня</label>
-                    </div>
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="bi bi-box-arrow-in-right me-2"></i>Войти
-                        </button>
-                    </div>
-                </form>
+        <div class="text-center mb-4">
+            <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
+                 style="width:72px;height:72px;background:linear-gradient(135deg,#4f46e5,#7c3aed);">
+                <i class="bi bi-book-half text-white" style="font-size:1.8rem;"></i>
             </div>
+            <h3 class="fw-bold mb-1">Добро пожаловать</h3>
+            <p class="text-muted">Войдите в систему чтобы продолжить</p>
+        </div>
+
+        <div class="card form-card p-4">
+            <form method="POST" novalidate>
+                <div class="mb-3">
+                    <label for="login" class="form-label fw-semibold small text-uppercase text-muted">Логин</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0">
+                            <i class="bi bi-person text-muted"></i>
+                        </span>
+                        <input type="text" class="form-control border-start-0 ps-0" id="login" name="login"
+                               placeholder="Введите логин" required autofocus
+                               value="{{ request.form.get('login', '') }}">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label fw-semibold small text-uppercase text-muted">Пароль</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0">
+                            <i class="bi bi-lock text-muted"></i>
+                        </span>
+                        <input type="password" class="form-control border-start-0 ps-0" id="password" name="password"
+                               placeholder="Введите пароль" required>
+                    </div>
+                </div>
+                <div class="mb-4 form-check">
+                    <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                    <label class="form-check-label text-muted" for="remember">Запомнить меня</label>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary fw-semibold py-2 rounded-pill"
+                            style="background:linear-gradient(135deg,#4f46e5,#7c3aed);border:none;">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Войти
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
