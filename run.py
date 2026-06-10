@@ -16,7 +16,7 @@ try:
     print("БД инициализирована", flush=True)
 
     print("Запуск Flask на 0.0.0.0:5000", flush=True)
-    app.run(debug=True, port=5000, host='0.0.0.0')
+    app.run(debug=True, port=8080, host='0.0.0.0')
 except BaseException as e:
     print(f"ОШИБКА: {e}", flush=True)
     traceback.print_exc()
